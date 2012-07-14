@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset=utf-8>
@@ -71,6 +71,7 @@ var MAX_LOG = 100;
 var data = [];
 var log = [];
 var time = 0;
+var staTime = -1;
 function saveData() {
 	localStorage.setItem('ppt_data_ver', DATA_VER);
 	localStorage.setItem('ppt_time', '' + time);
@@ -109,7 +110,12 @@ function calculationTime() {
 	var item = getTopItem();
 	if (0 <= item.elapse) {
 		time = +new Date() - item.elapse;
+		if (staTime != -1)
+		{
+			time = time - staTime;
+		}
 	}
+	staTime = -1;
 	item.elapse = -1;
 }
 function drawTitle() {
@@ -227,6 +233,7 @@ function popTimer() {
 		timeStamp: getTimeStamp(),
 		elapse: +new Date() - time
 	};
+	staTime = logItem.elapse;
 	log.push(logItem);
 	if (MAX_LOG < log.length) {
 		log.shift();
@@ -270,6 +277,7 @@ $('#pushBtn').click(function () {
 	resetTextAndScrollTop();
 });
 $('#popBtn').click(function () {
+	
 	popTimer();
 	calculationTime();
 	saveData();
